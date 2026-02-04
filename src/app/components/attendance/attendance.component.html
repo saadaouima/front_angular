@@ -1,0 +1,79 @@
+<div class="attendance-page">
+  <div class="page-header">
+    <h2>Attendance Records</h2>
+  </div>
+
+  <div class="filters-section card">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label for="date-filter">Date</label>
+        <input
+          type="date"
+          id="date-filter"
+          class="filter-input"
+          [value]="selectedDate"
+          (change)="onDateChange($event)"
+        />
+      </div>
+      <div class="filter-item">
+        <label for="status-filter">Status</label>
+        <select
+          id="status-filter"
+          class="filter-select"
+          (change)="onFilterStatus($event)"
+          [value]="filterStatus"
+        >
+          <option value="">All Status</option>
+          <option value="present">Present</option>
+          <option value="late">Late</option>
+          <option value="absent">Absent</option>
+          <option value="half_day">Half Day</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card attendance-table-card">
+    <div class="loading-state" *ngIf="loading">
+      <p>Loading attendance records...</p>
+    </div>
+
+    <div class="table-container" *ngIf="!loading && filteredRecords.length > 0">
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Date</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of filteredRecords">
+            <td>
+              <div class="employee-cell">
+                <span class="status-icon" [ngClass]="'status-' + record.status">
+                  {{ getStatusIcon(record.status) }}
+                </span>
+                <span>{{ record.employee_name }}</span>
+              </div>
+            </td>
+            <td>{{ record.date | date }}</td>
+            <td>{{ record.check_in }}</td>
+            <td>{{ record.check_out || '-' }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusBadgeClass(record.status)">
+                {{ record.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && filteredRecords.length === 0">
+      <p>No attendance records found for the selected filters.</p>
+    </div>
+  </div>
+</div>

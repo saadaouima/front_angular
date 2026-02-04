@@ -1,0 +1,105 @@
+<div class="employees-page">
+  <div class="page-header">
+    <h2>Employees Management</h2>
+    <button class="btn btn-primary" (click)="openAddForm()">
+      + Add Employee
+    </button>
+  </div>
+
+  <div class="filters-section card">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <input
+          type="text"
+          placeholder="Search employees..."
+          class="search-input"
+          [value]="searchTerm"
+          (input)="onSearch($event)"
+        />
+      </div>
+      <div class="filter-item">
+        <select class="filter-select" (change)="onFilterDepartment($event)" [value]="filterDepartment">
+          <option value="">All Departments</option>
+          <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <select class="filter-select" (change)="onFilterStatus($event)" [value]="filterStatus">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="on_leave">On Leave</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card employees-table-card">
+    <div class="loading-state" *ngIf="loading">
+      <p>Loading employees...</p>
+    </div>
+
+    <div class="table-container" *ngIf="!loading && filteredEmployees.length > 0">
+      <table class="employees-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Hire Date</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of filteredEmployees">
+            <td>
+              <div class="employee-cell">
+                <div class="employee-avatar-small">
+                  {{ employee.first_name.charAt(0) }}{{ employee.last_name.charAt(0) }}
+                </div>
+                <span>{{ employee.first_name }} {{ employee.last_name }}</span>
+              </div>
+            </td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.department }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.hire_date | date }}</td>
+            <td>{{ formatSalary(employee.salary) }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusBadgeClass(employee.status)">
+                {{ employee.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-icon" (click)="openEditForm(employee)" title="Edit">
+                  ✏️
+                </button>
+                <button class="btn-icon" (click)="deleteEmployee(employee.id!)" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && filteredEmployees.length === 0">
+      <p>No employees found. Try adjusting your filters or add new employees.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showAddForm" (click)="closeForm()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <app-employee-form
+      [employee]="editingEmployee"
+      (saved)="onEmployeeSaved()"
+      (cancelled)="closeForm()"
+    ></app-employee-form>
+  </div>
+</div>

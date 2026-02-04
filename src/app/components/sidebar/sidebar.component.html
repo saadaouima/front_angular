@@ -1,0 +1,18 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2 class="logo">HR Admin</h2>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a
+      *ngFor="let item of navItems"
+      [routerLink]="item.route"
+      class="nav-item"
+      [class.active]="isActiveRoute(item.route)"
+      routerLinkActive="active"
+    >
+      <span class="nav-icon">{{ item.icon }}</span>
+      <span class="nav-label">{{ item.label }}</span>
+    </a>
+  </nav>
+</aside>

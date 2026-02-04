@@ -1,0 +1,104 @@
+<div class="leave-requests-page">
+  <div class="page-header">
+    <h2>Leave Requests</h2>
+  </div>
+
+  <div class="filters-section card">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label for="status-filter">Status</label>
+        <select
+          id="status-filter"
+          class="filter-select"
+          (change)="onFilterStatus($event)"
+          [value]="filterStatus"
+        >
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label for="type-filter">Leave Type</label>
+        <select
+          id="type-filter"
+          class="filter-select"
+          (change)="onFilterType($event)"
+          [value]="filterType"
+        >
+          <option value="">All Types</option>
+          <option value="vacation">Vacation</option>
+          <option value="sick">Sick</option>
+          <option value="personal">Personal</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card leave-requests-table-card">
+    <div class="loading-state" *ngIf="loading">
+      <p>Loading leave requests...</p>
+    </div>
+
+    <div class="table-container" *ngIf="!loading && filteredRequests.length > 0">
+      <table class="leave-requests-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Leave Type</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Duration</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of filteredRequests">
+            <td>{{ request.employee_name }}</td>
+            <td>
+              <span class="badge" [ngClass]="getLeaveTypeBadgeClass(request.leave_type)">
+                {{ request.leave_type }}
+              </span>
+            </td>
+            <td>{{ request.start_date | date }}</td>
+            <td>{{ request.end_date | date }}</td>
+            <td>{{ calculateDuration(request.start_date, request.end_date) }} days</td>
+            <td class="reason-cell">{{ request.reason }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusBadgeClass(request.status)">
+                {{ request.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons" *ngIf="request.status === 'pending'">
+                <button
+                  class="btn-small btn-success"
+                  (click)="approveRequest(request.id!)"
+                  title="Approve"
+                >
+                  ✓
+                </button>
+                <button
+                  class="btn-small btn-danger"
+                  (click)="rejectRequest(request.id!)"
+                  title="Reject"
+                >
+                  ✗
+                </button>
+              </div>
+              <span *ngIf="request.status !== 'pending'" class="no-action">-</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && filteredRequests.length === 0">
+      <p>No leave requests found for the selected filters.</p>
+    </div>
+  </div>
+</div>

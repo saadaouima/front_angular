@@ -1,0 +1,130 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h2>Dashboard Overview</h2>
+  </div>
+
+  <div class="stats-grid">
+    <app-stats-card
+      title="Total Employees"
+      [value]="employeeStats.total"
+      icon="👥"
+      color="blue"
+    ></app-stats-card>
+
+    <app-stats-card
+      title="Active Employees"
+      [value]="employeeStats.active"
+      icon="✅"
+      color="green"
+    ></app-stats-card>
+
+    <app-stats-card
+      title="On Leave"
+      [value]="employeeStats.onLeave"
+      icon="🏖️"
+      color="orange"
+    ></app-stats-card>
+
+    <app-stats-card
+      title="Pending Requests"
+      [value]="leaveStats.pending"
+      icon="⏳"
+      color="blue"
+    ></app-stats-card>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="card attendance-card">
+      <h3 class="card-title">Today's Attendance</h3>
+      <div class="attendance-stats">
+        <div class="attendance-item">
+          <div class="attendance-icon present">✓</div>
+          <div>
+            <p class="attendance-label">Present</p>
+            <p class="attendance-value">{{ attendanceStats.present }}</p>
+          </div>
+        </div>
+        <div class="attendance-item">
+          <div class="attendance-icon absent">✗</div>
+          <div>
+            <p class="attendance-label">Absent</p>
+            <p class="attendance-value">{{ attendanceStats.absent }}</p>
+          </div>
+        </div>
+        <div class="attendance-item">
+          <div class="attendance-icon late">⏰</div>
+          <div>
+            <p class="attendance-label">Late</p>
+            <p class="attendance-value">{{ attendanceStats.late }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card recent-employees-card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Employees</h3>
+        <a routerLink="/employees" class="view-all-link">View All →</a>
+      </div>
+
+      <div class="employees-list" *ngIf="!loading && recentEmployees.length > 0">
+        <div class="employee-item" *ngFor="let employee of recentEmployees">
+          <div class="employee-avatar">
+            {{ employee.first_name.charAt(0) }}{{ employee.last_name.charAt(0) }}
+          </div>
+          <div class="employee-info">
+            <p class="employee-name">{{ employee.first_name }} {{ employee.last_name }}</p>
+            <p class="employee-role">{{ employee.position }}</p>
+          </div>
+          <span class="badge" [ngClass]="getStatusBadgeClass(employee.status)">
+            {{ employee.status }}
+          </span>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && recentEmployees.length === 0">
+        <p>No employees found. Add some employees to get started!</p>
+      </div>
+
+      <div class="loading-state" *ngIf="loading">
+        <p>Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card department-overview">
+    <h3 class="card-title">Department Distribution</h3>
+    <div class="department-grid">
+      <div class="department-item">
+        <div class="department-icon">💻</div>
+        <p class="department-name">Engineering</p>
+        <p class="department-count">{{ (employeeStats as any).departments?.Engineering || 0 }}</p>
+      </div>
+      <div class="department-item">
+        <div class="department-icon">👔</div>
+        <p class="department-name">HR</p>
+        <p class="department-count">{{ (employeeStats as any).departments?.HR || 0 }}</p>
+      </div>
+      <div class="department-item">
+        <div class="department-icon">📈</div>
+        <p class="department-name">Sales</p>
+        <p class="department-count">{{ (employeeStats as any).departments?.Sales || 0 }}</p>
+      </div>
+      <div class="department-item">
+        <div class="department-icon">🎨</div>
+        <p class="department-name">Marketing</p>
+        <p class="department-count">{{ (employeeStats as any).departments?.Marketing || 0 }}</p>
+      </div>
+      <div class="department-item">
+        <div class="department-icon">💰</div>
+        <p class="department-name">Finance</p>
+        <p class="department-count">{{ (employeeStats as any).departments?.Finance || 0 }}</p>
+      </div>
+      <div class="department-item">
+        <div class="department-icon">⚙️</div>
+        <p class="department-name">Operations</p>
+        <p class="department-count">{{ (employeeStats as any).departments?.Operations || 0 }}</p>
+      </div>
+    </div>
+  </div>
+</div>
